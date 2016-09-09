@@ -1,0 +1,21 @@
+1.Input Bandwidth
+input > 0.2k/s
+for i in {10300..10700}; do bw=`/opt/redis/bin/redis-cli -p $i -h w$i.test.redis.com info stats|grep instantaneous_input_kbps`; if [ ${bw:25} > 0.2 ] ; then echo $i'  '${bw:25}  >> ./in.txt; fi ;done
+
+cat in.txt |sort -n -k2
+
+2.Output Bandwidth
+input > 0.2k/s
+for i in {10300..10700}; do bw=`/opt/redis/bin/redis-cli -p $i -h w$i.test.redis.com info stats|grep instantaneous_output_kbps`; if [ ${bw:26} > 0.2 ] ; then echo $i'  '${bw:26}  >> ./out.txt; fi ;done
+
+cat out.txt |sort -n -k2
+
+3.Ops
+ops>100 record
+for i in {10300..10700}; do ops=`/opt/redis/bin/redis-cli -p $i -h w$i.test.redis.com info stats|grep instantaneous_ops_per_sec`; if [ ${ops:26} > 100 ] ; then echo $i'  '${ops:26}  >> ./ops.txt; fi ;done
+
+cat ops.txt |sort -n -k2
+
+4.Memory & Maxmemory
+
+for i in {10300..10400}; do mem=`/opt/redis/bin/redis-cli -p $i -h w$i.test.redis.com info memory|grep used_memory_rss`;max=`/opt/redis/bin/redis-cli -p $i -h w$i.test.redis.com config get maxmemory`; echo $i'mem:'${mem:16}$i'max:'${max:10};sleep 1;done
